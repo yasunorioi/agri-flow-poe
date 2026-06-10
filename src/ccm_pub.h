@@ -17,12 +17,12 @@ inline bool ccmPublish() {
   String xml = agri::ccmEnvelopeOpen();
 
   dtostrf(g_flow_lpm, 1, 3, buf);
-  xml += agri::ccmDatum("WaterFlow",
+  xml += agri::ccmDatumNT("WaterFlow", g_cfg.common.ccm_ntype,
                         g_cfg.common.ccm_room, g_cfg.common.ccm_region,
                         g_cfg.ccm_order_flow, g_cfg.common.ccm_priority, buf);
 
   dtostrf(volumeLiters(), 1, 3, buf);
-  xml += agri::ccmDatum("WaterCons",
+  xml += agri::ccmDatumNT("WaterCons", g_cfg.common.ccm_ntype,
                         g_cfg.common.ccm_room, g_cfg.common.ccm_region,
                         g_cfg.ccm_order_cons, g_cfg.common.ccm_priority, buf);
 

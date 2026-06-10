@@ -11,7 +11,7 @@
 #include "ccm_pub.h"
 
 const char *FW_NAME     = "agri-flow-poe";
-const char *FW_VERSION  = "0.2.0";
+const char *FW_VERSION  = "0.3.0";
 const char *FW_REPO     = "yasunorioi/agri-flow-poe";
 const char *FW_BIN_NAME = "agri-flow-poe.bin";
 
