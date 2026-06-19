@@ -11,7 +11,7 @@
 #include "ccm_pub.h"
 
 const char *FW_NAME     = "agri-flow-poe";
-const char *FW_VERSION  = "0.4.0";
+const char *FW_VERSION  = "0.5.0";
 const char *FW_REPO     = "yasunorioi/agri-flow-poe";
 const char *FW_BIN_NAME = "agri-flow-poe.bin";
 
@@ -30,10 +30,14 @@ void IRAM_ATTR onFlowPulse0() { g_pulse_count[0]++; }
 void IRAM_ATTR onFlowPulse1() { g_pulse_count[1]++; }
 
 static String renderDashboardSensors() {
-  String s; s.reserve(500);
+  String s; s.reserve(600);
   char buf[12];
   s = F("<h3>Flow</h3><table>"
         "<tr><th></th><th>ch0 (G26)</th><th>ch1 (G32)</th></tr>");
+
+  s += F("<tr><th>Topic</th>");
+  for (int i = 0; i < NUM_FLOW; i++) { s += "<td>"; s += g_cfg.topic[i]; s += "</td>"; }
+  s += F("</tr>");
 
   s += F("<tr><th>Flow rate</th>");
   for (int i = 0; i < NUM_FLOW; i++) {
@@ -65,16 +69,32 @@ static String renderConfigSensorRows() {
   auto row = [&](const char *label, const String &input) {
     s += "<tr><th>"; s += label; s += "</th><td>"; s += input; s += "</td></tr>";
   };
-  row("Pulses per litre (shared)",
-      "<input type=number name=ppl value='" + String(g_cfg.pulses_per_liter) + "'>");
-  row("Order (Flow ch0)",
-      "<input type=number name=ccm_ofl1 value='" + String(g_cfg.ccm_order_flow[0]) + "'>");
-  row("Order (Flow ch1)",
-      "<input type=number name=ccm_ofl2 value='" + String(g_cfg.ccm_order_flow[1]) + "'>");
-  row("Order (Cumulative ch0)",
-      "<input type=number name=ccm_oco1 value='" + String(g_cfg.ccm_order_cons[0]) + "'>");
-  row("Order (Cumulative ch1)",
-      "<input type=number name=ccm_oco2 value='" + String(g_cfg.ccm_order_cons[1]) + "'>");
+  auto num = [](const char *name, int v) {
+    return "<input type=number name=" + String(name) + " value='" + String(v) + "'>";
+  };
+  auto txt = [](const char *name, const char *v) {
+    return "<input name=" + String(name) + " value='" + String(v) + "'>";
+  };
+
+  s += F("<tr><th colspan=2><small>Note: the common Topic/Prefix above is the "
+         "node sys/LWT scope; the common CCM room/region are unused. Data + CCM "
+         "are per-channel below (ch0=G26→house2, ch1=G32→house3).</small></th></tr>");
+
+  row("Pulses per litre (shared)", num("ppl", g_cfg.pulses_per_liter));
+
+  row("MQTT topic (ch0 → house2)", txt("topic0", g_cfg.topic[0]));
+  row("MQTT topic (ch1 → house3)", txt("topic1", g_cfg.topic[1]));
+
+  row("CCM room / region (ch0)",
+      num("ccm_rm0", g_cfg.ccm_room[0]) + " / " + num("ccm_rg0", g_cfg.ccm_region[0]));
+  row("CCM room / region (ch1)",
+      num("ccm_rm1", g_cfg.ccm_room[1]) + " / " + num("ccm_rg1", g_cfg.ccm_region[1]));
+
+  row("Order Flow / Cons (ch0)",
+      num("ccm_of0", g_cfg.ccm_order_flow[0]) + " / " + num("ccm_oc0", g_cfg.ccm_order_cons[0]));
+  row("Order Flow / Cons (ch1)",
+      num("ccm_of1", g_cfg.ccm_order_flow[1]) + " / " + num("ccm_oc1", g_cfg.ccm_order_cons[1]));
+
   // Reset is a config-form action (core has no /reset route). Tick + Save.
   row("Reset cumulative volume",
       "<label><input type=checkbox name=flow_reset value=1> zero both channels on Save</label>");
@@ -82,11 +102,17 @@ static String renderConfigSensorRows() {
 }
 
 static void applyConfigSensorForm(const String &body) {
-  g_cfg.pulses_per_liter  = (uint16_t)agri::parseFormInt(body, "ppl",      g_cfg.pulses_per_liter);
-  g_cfg.ccm_order_flow[0] = (int16_t) agri::parseFormInt(body, "ccm_ofl1", g_cfg.ccm_order_flow[0]);
-  g_cfg.ccm_order_flow[1] = (int16_t) agri::parseFormInt(body, "ccm_ofl2", g_cfg.ccm_order_flow[1]);
-  g_cfg.ccm_order_cons[0] = (int16_t) agri::parseFormInt(body, "ccm_oco1", g_cfg.ccm_order_cons[0]);
-  g_cfg.ccm_order_cons[1] = (int16_t) agri::parseFormInt(body, "ccm_oco2", g_cfg.ccm_order_cons[1]);
+  g_cfg.pulses_per_liter  = (uint16_t)agri::parseFormInt(body, "ppl", g_cfg.pulses_per_liter);
+  agri::parseFormStr(body, "topic0", g_cfg.topic[0], sizeof(g_cfg.topic[0]));
+  agri::parseFormStr(body, "topic1", g_cfg.topic[1], sizeof(g_cfg.topic[1]));
+  g_cfg.ccm_room[0]       = (int16_t) agri::parseFormInt(body, "ccm_rm0", g_cfg.ccm_room[0]);
+  g_cfg.ccm_room[1]       = (int16_t) agri::parseFormInt(body, "ccm_rm1", g_cfg.ccm_room[1]);
+  g_cfg.ccm_region[0]     = (int16_t) agri::parseFormInt(body, "ccm_rg0", g_cfg.ccm_region[0]);
+  g_cfg.ccm_region[1]     = (int16_t) agri::parseFormInt(body, "ccm_rg1", g_cfg.ccm_region[1]);
+  g_cfg.ccm_order_flow[0] = (int16_t) agri::parseFormInt(body, "ccm_of0", g_cfg.ccm_order_flow[0]);
+  g_cfg.ccm_order_flow[1] = (int16_t) agri::parseFormInt(body, "ccm_of1", g_cfg.ccm_order_flow[1]);
+  g_cfg.ccm_order_cons[0] = (int16_t) agri::parseFormInt(body, "ccm_oc0", g_cfg.ccm_order_cons[0]);
+  g_cfg.ccm_order_cons[1] = (int16_t) agri::parseFormInt(body, "ccm_oc1", g_cfg.ccm_order_cons[1]);
   if (agri::parseFormInt(body, "flow_reset", 0)) resetVolume();
 }
 
