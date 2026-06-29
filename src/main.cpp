@@ -11,7 +11,7 @@
 #include "ccm_pub.h"
 
 const char *FW_NAME     = "agri-flow-poe";
-const char *FW_VERSION  = "0.6.0";
+const char *FW_VERSION  = "0.6.1";
 const char *FW_REPO     = "yasunorioi/agri-flow-poe";
 const char *FW_BIN_NAME = "agri-flow-poe.bin";
 
@@ -76,9 +76,19 @@ static String renderConfigSensorRows() {
     return "<input name=" + String(name) + " value='" + String(v) + "'>";
   };
 
+  // Core always renders common CCM Room/Region rows, but this node is
+  // per-channel (two houses) so those two are dead and look like a duplicate
+  // of the per-channel Room/Region below. Strip just those two rows on the
+  // client (Priority / Node type stay — they ARE shared). Removing the rows
+  // also drops them from the POST; parseFormInt then keeps the stored value.
+  s += F("<script>document.addEventListener('DOMContentLoaded',function(){"
+         "['ccm_room','ccm_reg'].forEach(function(n){"
+         "var e=document.getElementsByName(n)[0];"
+         "if(e){var r=e.closest('tr');if(r)r.remove();}});});</script>");
+
   s += F("<tr><th colspan=2><small>Note: the common Topic/Prefix above is the "
-         "node sys/LWT scope; the common CCM room/region are unused. Data + CCM "
-         "are per-channel below (ch0=G26→house2, ch1=G32→house3).</small></th></tr>");
+         "node sys/LWT scope. CCM Room/Region are per-channel below "
+         "(ch0=G26→house2, ch1=G32→house3); Priority / Node type are shared.</small></th></tr>");
 
   row("Pulses per litre (shared)", num("ppl", g_cfg.pulses_per_liter));
 
