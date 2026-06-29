@@ -25,7 +25,7 @@ M5Stack ATOM PoE Kit + DIGITEN ホール式流量計 **2台（別ハウスの灌
   `Topic/Prefix` は**ノード死活(LWT `<prefix>/sys/<id>/online`)スコープ専用**（既定 `agriha/2`）。
   共通の CCM room/region は**未使用**（下の ch 別設定を使う）。
 - **流量センサ固有（ch 別）**:
-  - `pulses_per_liter` — センサ仕様に合わせて (YF-S201 系で 450 がデフォルト、両 ch 共通)
+  - `pulses_per_liter` — センサ仕様に合わせて (DIGITEN G3/4 は `F=5.5*Q` → 5.5×60=**330** がデフォルト、両 ch 共通)
   - `MQTT topic (ch0/ch1)` — 各 ch の publish 先（既定 `agriha/2/sensor/Flow` / `agriha/3/sensor/Flow`、手動設定可）
   - `CCM room / region (ch0/ch1)` — ハウス対応。⚠️ region は pi4 ブリッジの region→house マップに
     合わせてから CCM を有効化（誤 region は誤ハウスに流れる）。CCM は既定 OFF。

@@ -11,7 +11,7 @@
 #include "ccm_pub.h"
 
 const char *FW_NAME     = "agri-flow-poe";
-const char *FW_VERSION  = "0.5.0";
+const char *FW_VERSION  = "0.6.0";
 const char *FW_REPO     = "yasunorioi/agri-flow-poe";
 const char *FW_BIN_NAME = "agri-flow-poe.bin";
 
@@ -95,6 +95,10 @@ static String renderConfigSensorRows() {
   row("Order Flow / Cons (ch1)",
       num("ccm_of1", g_cfg.ccm_order_flow[1]) + " / " + num("ccm_oc1", g_cfg.ccm_order_cons[1]));
 
+  // CCM識別子 (UECS <DATA type> names), shared by both channels. Empty = off.
+  row("CCM識別子: 流量 (WaterFlow)", txt("ct_flow", g_cfg.ccm_type_flow));
+  row("CCM識別子: 積算 (WaterCons)", txt("ct_cons", g_cfg.ccm_type_cons));
+
   // Reset is a config-form action (core has no /reset route). Tick + Save.
   row("Reset cumulative volume",
       "<label><input type=checkbox name=flow_reset value=1> zero both channels on Save</label>");
@@ -113,6 +117,8 @@ static void applyConfigSensorForm(const String &body) {
   g_cfg.ccm_order_flow[1] = (int16_t) agri::parseFormInt(body, "ccm_of1", g_cfg.ccm_order_flow[1]);
   g_cfg.ccm_order_cons[0] = (int16_t) agri::parseFormInt(body, "ccm_oc0", g_cfg.ccm_order_cons[0]);
   g_cfg.ccm_order_cons[1] = (int16_t) agri::parseFormInt(body, "ccm_oc1", g_cfg.ccm_order_cons[1]);
+  agri::parseFormStr(body, "ct_flow", g_cfg.ccm_type_flow, sizeof(g_cfg.ccm_type_flow));
+  agri::parseFormStr(body, "ct_cons", g_cfg.ccm_type_cons, sizeof(g_cfg.ccm_type_cons));
   if (agri::parseFormInt(body, "flow_reset", 0)) resetVolume();
 }
 
@@ -123,6 +129,10 @@ static void addStatusFields(JsonObject doc) {
   doc["flow2_lpm"]   = g_flow_lpm[1];
   doc["volume2_l"]   = volumeLiters(1);
   doc["raw_pulses2"] = g_cum_pulses[1];
+  // CCM識別子 (wire type names) — exposed for inspection / verification.
+  JsonObject ct = doc["ccm_types"].to<JsonObject>();
+  ct["flow"] = g_cfg.ccm_type_flow;
+  ct["cons"] = g_cfg.ccm_type_cons;
 }
 
 void setup() {
