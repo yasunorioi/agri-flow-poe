@@ -51,6 +51,9 @@ pio run -e m5atom-poe -t upload                                       # USB-C
 pio run -e m5atom-poe -t upload --upload-port agri-flow-01.local      # OTA
 ```
 
+> 🛠 **ビルド環境（Windows / Linux 共用）・Linux 初回セットアップ（udev 等）** →
+> [agri-node-poe-core/docs/cross-platform-build.md](https://github.com/yasunorioi/agri-node-poe-core/blob/main/docs/cross-platform-build.md)
+
 ## 関連プロジェクト
 
 - [agri-node-poe-core](https://github.com/yasunorioi/agri-node-poe-core) — 共通ライブラリ
