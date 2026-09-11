@@ -12,7 +12,7 @@
 ## ハードウェア
 
 - **MCU**: [M5Stack ATOM Lite](https://docs.m5stack.com/en/core/ATOM%20Lite) (ESP32-PICO-D4)
-- **PoE / Ethernet**: M5Stack ATOM PoE Base (W5500 on SPI)
+- **PoE / Ethernet**: [M5Stack ATOM PoE Base](https://docs.m5stack.com/en/atom/Atomic%20PoE%20Base) (W5500 on SPI)
 - **センサー**: DIGITEN 系ホール式流量計 **×2**（[shop](https://www.digiten.shop/collections/counter)）
   - 信号: Grove **G26 (ch0→house2)** / **G32 (ch1→house3)** — それぞれ FALLING-edge ISR でカウント。
     どちらも M5 ATOM の Grove コネクタに出ているので 1ポートに2台を 5V/GND 共有で結線可能。

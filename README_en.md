@@ -13,7 +13,7 @@ its own independent MQTT topic and CCM room/region/order (only calibration is sh
 ## Hardware
 
 - **MCU**: [M5Stack ATOM Lite](https://docs.m5stack.com/en/core/ATOM%20Lite) (ESP32-PICO-D4)
-- **PoE / Ethernet**: M5Stack ATOM PoE Base (W5500 on SPI)
+- **PoE / Ethernet**: [M5Stack ATOM PoE Base](https://docs.m5stack.com/en/atom/Atomic%20PoE%20Base) (W5500 on SPI)
 - **Sensor**: DIGITEN-family Hall-effect flow meters **×2** ([shop](https://www.digiten.shop/collections/counter))
   - Signal: Grove **G26 (ch0→house2)** / **G32 (ch1→house3)** — each counted by a FALLING-edge ISR.
     Both are exposed on the M5 ATOM's Grove connector, so two units can be wired to a single port sharing 5V/GND.
