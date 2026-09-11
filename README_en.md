@@ -2,7 +2,7 @@
 
 [🇯🇵 日本語](README_ja.md) · **English**
 
-M5Stack ATOM PoE Kit + DIGITEN Hall-effect flow meters **×2 (two irrigation lines in separate greenhouses)** → MQTT + UECS-CCM.
+[M5Stack ATOM PoE Kit](https://docs.m5stack.com/en/atom/atom_poe) + [DIGITEN](https://www.digiten.shop/collections/counter)-family Hall-effect flow meters **×2 (two irrigation lines in separate greenhouses)** → MQTT + UECS-CCM.
 A sketch that sits thinly on top of the
 [agri-node-poe-core](https://github.com/yasunorioi/agri-node-poe-core)
 library; the body is just repetition of the boilerplate.
@@ -12,7 +12,7 @@ its own independent MQTT topic and CCM room/region/order (only calibration is sh
 
 ## Hardware
 
-- **MCU**: M5Stack ATOM Lite (ESP32-PICO-D4)
+- **MCU**: [M5Stack ATOM Lite](https://docs.m5stack.com/en/core/ATOM%20Lite) (ESP32-PICO-D4)
 - **PoE / Ethernet**: M5Stack ATOM PoE Base (W5500 on SPI)
 - **Sensor**: DIGITEN-family Hall-effect flow meters **×2** ([shop](https://www.digiten.shop/collections/counter))
   - Signal: Grove **G26 (ch0→house2)** / **G32 (ch1→house3)** — each counted by a FALLING-edge ISR.

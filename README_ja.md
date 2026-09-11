@@ -2,7 +2,7 @@
 
 **日本語** · [🇬🇧 English](README_en.md)
 
-M5Stack ATOM PoE Kit + DIGITEN ホール式流量計 **2台（別ハウスの灌水2系統）** → MQTT + UECS-CCM。
+[M5Stack ATOM PoE Kit](https://docs.m5stack.com/en/atom/atom_poe) + [DIGITEN](https://www.digiten.shop/collections/counter) ホール式流量計 **2台（別ハウスの灌水2系統）** → MQTT + UECS-CCM。
 [agri-node-poe-core](https://github.com/yasunorioi/agri-node-poe-core)
 ライブラリの上に薄く乗っているだけのスケッチで、本体は雛形の繰り返し。
 
@@ -11,7 +11,7 @@ M5Stack ATOM PoE Kit + DIGITEN ホール式流量計 **2台（別ハウスの灌
 
 ## ハードウェア
 
-- **MCU**: M5Stack ATOM Lite (ESP32-PICO-D4)
+- **MCU**: [M5Stack ATOM Lite](https://docs.m5stack.com/en/core/ATOM%20Lite) (ESP32-PICO-D4)
 - **PoE / Ethernet**: M5Stack ATOM PoE Base (W5500 on SPI)
 - **センサー**: DIGITEN 系ホール式流量計 **×2**（[shop](https://www.digiten.shop/collections/counter)）
   - 信号: Grove **G26 (ch0→house2)** / **G32 (ch1→house3)** — それぞれ FALLING-edge ISR でカウント。
